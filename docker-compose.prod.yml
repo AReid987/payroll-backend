@@ -1,0 +1,75 @@
+version: '3.8'
+
+services:
+  # Payroll Backend API (Production)
+  payroll-api:
+    build: .
+    container_name: payroll-backend-prod
+    ports:
+      - "8080:8080"
+    environment:
+      - DATABASE_URL=postgresql://payroll_user:payroll_password@postgres:5432/payroll
+      - SECRET_KEY=${SECRET_KEY:-your-very-secure-secret-key-here}
+      - DEBUG=false
+      - ACCESS_TOKEN_EXPIRE_MINUTES=30
+    depends_on:
+      - postgres
+      - redis
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: payroll-postgres-prod
+    environment:
+      POSTGRES_DB: payroll
+      POSTGRES_USER: payroll_user
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-payroll_password}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U payroll_user -d payroll"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Redis for caching
+  redis:
+    image: redis:7-alpine
+    container_name: payroll-redis-prod
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Nginx reverse proxy (optional)
+  nginx:
+    image: nginx:alpine
+    container_name: payroll-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./ssl:/etc/nginx/ssl:ro
+    depends_on:
+      - payroll-api
+    restart: unless-stopped
+    profiles:
+      - nginx
+
+volumes:
+  postgres_data:
+
+networks:
+  default:
+    name: payroll-network-prod

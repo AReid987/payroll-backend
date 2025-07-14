@@ -16,17 +16,17 @@ distribution = false
 
 [tool.pdm.scripts]
 # Development server with hot reload
-dev = "uvicorn app.main:app --reload --host 0.0.0.0 --port 8000"
+dev = "uvicorn app.main:app --reload --host 0.0.0.0 --port 8080"
 # Production server
-start = "uvicorn app.main:app --host 0.0.0.0 --port 8000"
+start = "uvicorn app.main:app --host 0.0.0.0 --port 8080"
 # FastAPI CLI development (alternative)
-fastapi-dev = "fastapi dev --app app.main:app --port 8000"
+fastapi-dev = "fastapi dev --app app.main:app --port 8080"
 # FastAPI CLI production (alternative)
-fastapi-run = "fastapi run --app app.main:app --port 8000"
+fastapi-run = "fastapi run --app app.main:app --port 8080"
 # Test the API
-test-api = {shell = "curl -s http://localhost:8000/ | python -m json.tool"}
+test-api = {shell = "curl -s http://localhost:8080/ | python -m json.tool"}
 # Health check
-health = {shell = "curl -s http://localhost:8000/health | python -m json.tool"}
+health = {shell = "curl -s http://localhost:8080/health | python -m json.tool"}
 # Setup and initialization
 setup = "python -m app.utils"
 # Create admin user only

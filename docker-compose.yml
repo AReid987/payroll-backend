@@ -1,0 +1,55 @@
+version: '3.8'
+
+services:
+  # Payroll Backend API
+  payroll-api:
+    build: .
+    container_name: payroll-backend
+    ports:
+      - "8080:8080"
+    environment:
+      - DATABASE_URL=sqlite:///./payroll.db
+      - SECRET_KEY=your-secret-key-change-in-production
+      - DEBUG=true
+    volumes:
+      - ./data:/app/data  # Persist database
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # PostgreSQL Database (for production)
+  postgres:
+    image: postgres:15-alpine
+    container_name: payroll-postgres
+    environment:
+      POSTGRES_DB: payroll
+      POSTGRES_USER: payroll_user
+      POSTGRES_PASSWORD: payroll_password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+    profiles:
+      - production
+
+  # Redis for caching (optional)
+  redis:
+    image: redis:7-alpine
+    container_name: payroll-redis
+    ports:
+      - "6379:6379"
+    restart: unless-stopped
+    profiles:
+      - production
+
+volumes:
+  postgres_data:
+
+networks:
+  default:
+    name: payroll-network
