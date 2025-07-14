@@ -5,7 +5,7 @@ description = "Default template for PDM package"
 authors = [
     {name = "J Feelgood", email = "user@payroll.local"},
 ]
-dependencies = ["fastapi>=0.116.1", "sqlalchemy>=2.0.41", "passlib[bcrypt]>=1.7.4", "python-jose>=3.5.0", "python-multipart>=0.0.20", "python-telegram-bot>=22.2", "uvicorn>=0.35.0"]
+dependencies = ["fastapi>=0.116.1", "sqlalchemy>=2.0.41", "passlib[bcrypt]>=1.7.4", "python-jose>=3.5.0", "python-multipart>=0.0.20", "python-telegram-bot>=22.2", "uvicorn>=0.35.0", "fastapi-cli>=0.0.8", "pydantic-settings>=2.10.1", "pydantic[email]>=2.11.7", "email-validator>=2.2.0", "requests>=2.32.4"]
 requires-python = "==3.12.*"
 readme = "README.md"
 license = {text = "MIT"}
@@ -13,3 +13,21 @@ license = {text = "MIT"}
 
 [tool.pdm]
 distribution = false
+
+[tool.pdm.scripts]
+# Development server with hot reload
+dev = "uvicorn app.main:app --reload --host 0.0.0.0 --port 8000"
+# Production server
+start = "uvicorn app.main:app --host 0.0.0.0 --port 8000"
+# FastAPI CLI development (alternative)
+fastapi-dev = "fastapi dev --app app.main:app --port 8000"
+# FastAPI CLI production (alternative)
+fastapi-run = "fastapi run --app app.main:app --port 8000"
+# Test the API
+test-api = {shell = "curl -s http://localhost:8000/ | python -m json.tool"}
+# Health check
+health = {shell = "curl -s http://localhost:8000/health | python -m json.tool"}
+# Setup and initialization
+setup = "python -m app.utils"
+# Create admin user only
+create-admin = "python -c 'from app.utils import create_admin_user; create_admin_user()'"
