@@ -11,7 +11,7 @@ from ..schemas import (
     TimeEntryCreate, TimeEntryUpdate,
     MessageResponse, TimeEntryStatus
 )
-from ..auth.dependencies import get_current_active_user, require_admin
+from ..auth.dependencies import get_current_user, require_admin
 
 router = APIRouter(prefix="/time", tags=["time-tracking"])
 
@@ -37,7 +37,7 @@ def calculate_hours(clock_in: datetime, clock_out: datetime, break_duration: int
 async def clock_in(
     time_entry: TimeEntryCreate,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_active_user)
+    current_user: User = Depends(get_current_user)
 ):
     """Clock in - create a new time entry"""
     # Get employee profile
@@ -82,7 +82,7 @@ async def clock_out(
     break_duration: Optional[int] = 0,
     notes: Optional[str] = None,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_active_user)
+    current_user: User = Depends(get_current_user)
 ):
     """Clock out - update time entry with clock out time"""
     # Get employee profile
@@ -147,7 +147,7 @@ async def get_my_time_entries(
     start_date: Optional[date] = Query(None),
     end_date: Optional[date] = Query(None),
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_active_user)
+    current_user: User = Depends(get_current_user)
 ):
     """Get current user's time entries"""
     employee = db.query(Employee).filter(Employee.user_id == current_user.id).first()
@@ -199,7 +199,7 @@ async def get_time_entries(
 async def get_time_entry(
     entry_id: int,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_active_user)
+    current_user: User = Depends(get_current_user)
 ):
     """Get specific time entry"""
     entry = db.query(TimeEntry).filter(TimeEntry.id == entry_id).first()
@@ -226,7 +226,7 @@ async def update_time_entry(
     entry_id: int,
     entry_update: TimeEntryUpdate,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_active_user)
+    current_user: User = Depends(get_current_user)
 ):
     """Update time entry"""
     entry = db.query(TimeEntry).filter(TimeEntry.id == entry_id).first()
@@ -305,7 +305,7 @@ async def get_my_time_summary(
     start_date: Optional[date] = Query(None),
     end_date: Optional[date] = Query(None),
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_active_user)
+    current_user: User = Depends(get_current_user)
 ):
     """Get time summary for current user"""
     employee = db.query(Employee).filter(Employee.user_id == current_user.id).first()

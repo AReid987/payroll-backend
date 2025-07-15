@@ -5,7 +5,7 @@ description = "Default template for PDM package"
 authors = [
     {name = "J Feelgood", email = "user@payroll.local"},
 ]
-dependencies = ["fastapi>=0.116.1", "sqlalchemy>=2.0.41", "passlib[bcrypt]>=1.7.4", "python-jose>=3.5.0", "python-multipart>=0.0.20", "python-telegram-bot>=22.2", "uvicorn>=0.35.0", "fastapi-cli>=0.0.8", "pydantic-settings>=2.10.1", "pydantic[email]>=2.11.7", "email-validator>=2.2.0", "requests>=2.32.4"]
+dependencies = ["fastapi>=0.116.1", "sqlalchemy>=2.0.41", "passlib[bcrypt]>=1.7.4", "python-jose>=3.5.0", "python-multipart>=0.0.20", "python-telegram-bot>=22.2", "uvicorn>=0.35.0", "fastapi-cli>=0.0.8", "pydantic-settings>=2.10.1", "pydantic[email]>=2.11.7", "email-validator>=2.2.0", "requests>=2.32.4", "fastapi-auth0>=0.5.0"]
 requires-python = "==3.12.*"
 readme = "README.md"
 license = {text = "MIT"}

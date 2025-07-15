@@ -12,7 +12,7 @@ from ..schemas import (
     TimeEntry as TimeEntrySchema, TimeEntryCreate, TimeEntryUpdate,
     PayrollSummary, MessageResponse, PayrollStatus
 )
-from ..auth.dependencies import get_current_active_user, require_admin
+from ..auth.dependencies import get_current_user, require_admin
 
 router = APIRouter(prefix="/payroll", tags=["payroll"])
 
@@ -103,7 +103,7 @@ async def get_payroll_records(
     employee_id: Optional[int] = Query(None),
     status_filter: Optional[PayrollStatus] = Query(None),
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_active_user)
+    current_user: User = Depends(get_current_user)
 ):
     """Get payroll records"""
     query = db.query(PayrollRecord)
@@ -126,7 +126,7 @@ async def get_my_payroll_records(
     skip: int = 0,
     limit: int = 100,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_active_user)
+    current_user: User = Depends(get_current_user)
 ):
     """Get current user's payroll records"""
     records = db.query(PayrollRecord).filter(
@@ -139,7 +139,7 @@ async def get_my_payroll_records(
 async def get_payroll_record(
     record_id: int,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_active_user)
+    current_user: User = Depends(get_current_user)
 ):
     """Get specific payroll record"""
     record = db.query(PayrollRecord).filter(PayrollRecord.id == record_id).first()
