@@ -14,12 +14,17 @@ from ..auth.dependencies import get_current_user, require_admin
 router = APIRouter(prefix="/users", tags=["users"])
 
 # User management endpoints
-@router.get("/me", response_model=UserSchema)
+@router.get("/me")
 async def get_current_user_info(
     current_user: dict = Depends(get_current_user)
 ):
-    """Get current user information"""
-    return current_user
+    """Get current user information from Auth0"""
+    return {
+        "id": current_user.id,
+        "email": getattr(current_user, 'email', None),
+        "permissions": getattr(current_user, 'permissions', []),
+        "auth0_user": True
+    }
 
 @router.put("/me", response_model=UserSchema)
 async def update_current_user(

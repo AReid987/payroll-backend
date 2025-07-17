@@ -14,7 +14,8 @@ get_current_user = auth0.get_user
 
 def require_admin(user: Auth0User = Depends(get_current_user)):
     # Customize this check based on your Auth0 claims/roles
-    if not user.get('permissions') or 'admin' not in user.get('permissions', []):
+    permissions = getattr(user, 'permissions', None) or []
+    if 'admin' not in permissions:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail='Admin privileges required'
