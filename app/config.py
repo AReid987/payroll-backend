@@ -19,6 +19,10 @@ class Settings(BaseSettings):
     telegram_bot_token: Optional[str] = None
     telegram_webhook_url: Optional[str] = None
     
+    # Auth0 settings
+    auth0_domain: Optional[str] = None
+    auth0_audience: Optional[str] = None
+    
     class Config:
         env_file = ".env"
 

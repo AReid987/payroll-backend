@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from .database import engine, Base
-from .routers.users import router as users_router, auth_router
+from .routers.users import router as users_router
 from .config import settings
 
 # Create database tables
@@ -14,7 +14,6 @@ app = FastAPI(
 )
 
 # Include routers
-app.include_router(auth_router)
 app.include_router(users_router)
 
 # Import and include other routers

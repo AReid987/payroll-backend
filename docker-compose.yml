@@ -11,6 +11,8 @@ services:
       - DATABASE_URL=sqlite:///./payroll.db
       - SECRET_KEY=your-secret-key-change-in-production
       - DEBUG=true
+      - AUTH0_DOMAIN=test-domain.auth0.com
+      - AUTH0_AUDIENCE=test-audience
     volumes:
       - ./data:/app/data  # Persist database
     restart: unless-stopped

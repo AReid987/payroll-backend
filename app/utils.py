@@ -1,8 +1,26 @@
 from sqlalchemy.orm import Session
 from .database import SessionLocal, engine, Base
 from .models import User, Employee, Department
-from .auth.auth import create_user
+from passlib.context import CryptContext
 from datetime import date
+
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+def create_user(db: Session, user_data: dict):
+    """Create a new user with hashed password"""
+    hashed_password = pwd_context.hash(user_data["password"])
+    user = User(
+        username=user_data["username"],
+        email=user_data["email"],
+        hashed_password=hashed_password,
+        full_name=user_data["full_name"],
+        is_active=user_data.get("is_active", True),
+        is_admin=user_data.get("is_admin", False)
+    )
+    db.add(user)
+    db.commit()
+    db.refresh(user)
+    return user
 
 
 def init_database():
